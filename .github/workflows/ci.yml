@@ -19,11 +19,11 @@ jobs:
       with:
         python-version: '3.12.7'
 
-    # 3. Install library MLflow dan pendukung utamanya
+    # 3. Install library MLflow dan pendukung utamanya (Sudah ditambah dagshub)
     - name: Install MLflow & Dependencies
       run: |
         pip install --upgrade pip
-        pip install mlflow==2.19.0 scikit-learn pandas numpy
+        pip install mlflow==2.19.0 scikit-learn pandas numpy dagshub
 
     # 4. Login otomatis ke Docker Hub
     - name: Log in to Docker Hub

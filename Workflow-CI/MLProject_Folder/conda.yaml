@@ -1,4 +1,4 @@
-name: mlflow_env
+name: heart_disease_env
 channels:
   - conda-forge
   - defaults
@@ -11,5 +11,3 @@ dependencies:
       - pandas
       - numpy
       - dagshub
-      - matplotlib
-      - seaborn
