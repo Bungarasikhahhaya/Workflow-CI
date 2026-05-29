@@ -9,17 +9,17 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    # 1. Mengambil kode dari repositori ke server runner
+    # 1. Ambil seluruh kode repositori ke server runner
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    # 2. Menyiapkan lingkungan Python versi 3.12
+    # 2. Siapkan lingkungan Python versi 3.12
     - name: Set up Python 3.12
       uses: actions/setup-python@v5
       with:
         python-version: '3.12.7'
 
-    # 3. Menginstal library MLflow dan pendukung utamanya
+    # 3. Install library MLflow dan pendukung utamanya
     - name: Install MLflow & Dependencies
       run: |
         pip install --upgrade pip
@@ -32,19 +32,19 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-    # 5. Jalankan MLflow Project (Hanya masuk ke MLProject_Folder)
+    # 5. Jalankan MLflow Project (Masuk ke Workflow-CI lalu ke MLProject_Folder)
     - name: Run MLflow Project
       run: |
-        cd MLProject_Folder
+        cd Workflow-CI/MLProject_Folder
         mlflow run . --env-manager=local
 
-    # 6. Mengubah model menjadi Docker Image
+    # 6. Mengubah model hasil training menjadi Docker Image
     - name: Build Docker Image using MLflow
       run: |
-        cd MLProject_Folder
+        cd Workflow-CI/MLProject_Folder
         mlflow models build-docker -m "model" -n "${{ secrets.DOCKER_HUB_USERNAME }}/heart-disease-model:latest" --enable-mlserver
 
-    # 7. Mengirimkan Docker Image ke Docker Hub
+    # 7. Kirim Docker Image ke Docker Hub
     - name: Push Docker Image to Docker Hub
       run: |
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/heart-disease-model:latest
