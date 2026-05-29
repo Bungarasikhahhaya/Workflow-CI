@@ -19,7 +19,7 @@ jobs:
       with:
         python-version: '3.12.7'
 
-    # 3. Install library MLflow dan pendukung utamanya (Sudah ditambah dagshub)
+    # 3. Install library MLflow dan pendukung utamanya
     - name: Install MLflow & Dependencies
       run: |
         pip install --upgrade pip
@@ -32,7 +32,7 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-    # 5. Jalankan MLflow Project (Meneruskan Token DagsHub agar tidak minta login manual)
+    # 5. Jalankan MLflow Project (Meneruskan Token DagsHub)
     - name: Run MLflow Project
       env:
         DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
@@ -40,11 +40,14 @@ jobs:
         cd Workflow-CI/MLProject_Folder
         mlflow run . --env-manager=local --experiment-name="CI_Retraining_Pipeline"
 
-    # 6. Mengubah model hasil training menjadi Docker Image
+    # 6. Mengubah model hasil training menjadi Docker Image (Mencari folder model di mlruns secara otomatis)
     - name: Build Docker Image using MLflow
       run: |
         cd Workflow-CI/MLProject_Folder
-        mlflow models build-docker -m "model" -n "${{ secrets.DOCKER_HUB_USERNAME }}/heart-disease-model:latest" --enable-mlserver
+        # Mencari lokasi folder artifacts/model yang baru saja dibuat di dalam direktori mlruns
+        MODEL_PATH=$(find mlruns/ -type d -name "model" | head -n 1)
+        echo "Lokasi model ditemukan di: $MODEL_PATH"
+        mlflow models build-docker -m "$MODEL_PATH" -n "${{ secrets.DOCKER_HUB_USERNAME }}/heart-disease-model:latest" --enable-mlserver
 
     # 7. Kirim Docker Image ke Docker Hub
     - name: Push Docker Image to Docker Hub
