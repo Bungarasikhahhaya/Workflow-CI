@@ -7,16 +7,16 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
 def run_retraining():
-    # 1. Integrasi Otomatis ke DagsHub (Deteksi Environment)
-    # Menggunakan try-except agar jika dijalankan di dalam Docker/GitHub Actions tanpa token, tidak langsung crash
+    # 1. Integrasi Otomatis ke DagsHub (Mendukung Otomatisasi CI)
     try:
+        # Cek apakah token tersedia di environment variable
+        if "DAGSHUB_TOKEN" in os.environ:
+            dagshub.auth.add_app_token(token=os.environ["DAGSHUB_TOKEN"])
+            
         dagshub.init(repo_owner='BungaRasikhahhaya', repo_name='Eksperimen_SML_BungaRasikhahHaya', mlflow=True)
         print("✅ Berhasil terhubung ke tracking server DagsHub.")
     except Exception as e:
         print(f"⚠️ Tracking dialihkan ke lokal/default karena: {e}")
-    
-    # Set nama eksperimen khusus untuk pipeline CI
-    mlflow.set_experiment("CI_Retraining_Pipeline")
     
     # 2. Load Dataset Hasil Preprocessing
     # Menggunakan path relatif agar fleksibel saat dijalankan di komputer lokal maupun di dalam Docker Container

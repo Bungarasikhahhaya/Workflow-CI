@@ -32,11 +32,13 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-    # 5. Jalankan MLflow Project (Masuk ke Workflow-CI lalu ke MLProject_Folder)
+    # 5. Jalankan MLflow Project (Meneruskan Token DagsHub agar tidak minta login manual)
     - name: Run MLflow Project
+      env:
+        DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
       run: |
         cd Workflow-CI/MLProject_Folder
-        mlflow run . --env-manager=local
+        mlflow run . --env-manager=local --experiment-name="CI_Retraining_Pipeline"
 
     # 6. Mengubah model hasil training menjadi Docker Image
     - name: Build Docker Image using MLflow
