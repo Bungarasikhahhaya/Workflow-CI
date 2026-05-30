@@ -1,7 +1,0 @@
-name: Heart Disease Production Project
-
-conda_env: conda.yaml
-
-entry_points:
-  main:
-    command: "python modelling.py"
