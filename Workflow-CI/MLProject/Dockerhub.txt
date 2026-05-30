@@ -1,0 +1,7 @@
+Tautan Repositori Docker Hub - Proyek Prediksi Penyakit Jantung
+
+Link Image:
+https://hub.docker.com/r/bungarasikhahhaya/heart-disease-model
+
+Tag:
+bungarasikhahhaya/heart-disease-model:latest
